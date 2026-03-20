@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>FreshMart — Business Problem & Solution</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#f7f5f0;--s1:#ffffff;--s2:#f2f0eb;--s3:#ebe8e2;--s4:#e2dfd8;
+  --border:#d8d4cc;--border2:#c8c4bc;
+  --text:#1c1a16;--muted:#6b6760;--dim:#a8a49e;
+  --green:#1a7a4a;--greenbg:#e8f5ee;--greenbd:#a8d8bc;
+  --red:#c0392b;--redbg:#fdecea;--redbd:#f0b0aa;
+  --amber:#b8720a;--amberbg:#fef3e0;--amberbd:#f0cc80;
+  --blue:#1a5a9a;--bluebg:#e8f0f8;--bluebd:#a8c4e0;
+  --font:'Outfit',sans-serif;--mono:'JetBrains Mono',monospace;
+}
+html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:var(--font);font-size:14px;}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;height:54px;
+  display:flex;align-items:center;padding:0 32px;gap:14px;
+  background:rgba(247,245,240,.97);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+}
+.logo{
+  width:32px;height:32px;border-radius:8px;background:var(--green);
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:13px;font-weight:700;
+}
+.nav-name{font-size:14px;font-weight:600;}
+.nav-sub{font-size:11px;color:var(--muted);}
+.nav-right{margin-left:auto;display:flex;gap:8px;}
+.nbadge{font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid var(--border);color:var(--muted);background:var(--s1);}
+.nbadge.alert{background:var(--redbg);color:var(--red);border-color:var(--redbd);}
+.nbadge.ok{background:var(--greenbg);color:var(--green);border-color:var(--greenbd);}
+
+/* PAGE */
+.page{max-width:1100px;margin:0 auto;padding:74px 24px 60px;}
+
+/* HERO */
+.hero{padding:32px 0 28px;border-bottom:1px solid var(--border);margin-bottom:24px;}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;
+  letter-spacing:.7px;text-transform:uppercase;color:var(--green);
+  border:1px solid var(--greenbd);background:var(--greenbg);
+  padding:4px 12px;border-radius:20px;margin-bottom:14px;
+}
+.hero h1{font-size:28px;font-weight:700;line-height:1.25;letter-spacing:-.3px;margin-bottom:8px;}
+.hero h1 span{color:var(--red);}
+.hero-desc{font-size:13px;color:var(--muted);max-width:620px;line-height:1.7;margin-bottom:20px;}
+.hero-meta{display:flex;gap:20px;flex-wrap:wrap;}
+.meta-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);}
+.meta-dot{width:6px;height:6px;border-radius:50%;background:var(--green);}
+
+/* KPI ROW */
+.kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:24px;}
+.kpi{background:var(--s1);border:1px solid var(--border);border-radius:10px;padding:14px 16px;}
+.kpi-num{font-size:24px;font-weight:700;font-family:var(--mono);line-height:1;margin-bottom:3px;}
+.kpi-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;}
+.kpi-sub{font-size:11px;margin-top:4px;}
+
+/* TABS */
+.tabs{display:flex;gap:3px;background:var(--s3);border:1px solid var(--border);border-radius:10px;padding:3px;margin-bottom:22px;}
+.tb{flex:1;padding:9px 16px;font-size:13px;font-weight:500;background:none;border:none;
+  cursor:pointer;color:var(--muted);border-radius:7px;transition:all .18s;font-family:var(--font);}
+.tb.active{background:var(--s1);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.08);border:1px solid var(--border);}
+.tb:hover:not(.active){color:var(--text);}
+.tp{display:none;}.tp.active{display:block;}
+
+/* CARDS */
+.card{background:var(--s1);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:14px;}
+.card-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.card-title::after{content:'';flex:1;height:1px;background:var(--border);}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;}
+
+/* FINDING CARDS */
+.finding{background:var(--s1);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:12px;}
+.finding-header{padding:14px 18px 12px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:12px;}
+.finding-num{
+  width:28px;height:28px;border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;font-family:var(--mono);flex-shrink:0;
+}
+.finding-title{font-size:14px;font-weight:600;margin-bottom:3px;}
+.finding-subtitle{font-size:11px;color:var(--muted);}
+.finding-body{padding:14px 18px;}
+.finding-stat{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:8px 0;border-bottom:1px solid var(--s3);font-size:12px;
+}
+.finding-stat:last-child{border-bottom:none;padding-bottom:0;}
+.fs-label{color:var(--muted);}
+.fs-val{font-weight:600;font-family:var(--mono);}
+
+/* HORIZONTAL BAR */
+.hbar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.hbar-label{font-size:12px;min-width:160px;color:var(--text);}
+.hbar-track{flex:1;height:10px;background:var(--s3);border-radius:5px;overflow:hidden;}
+.hbar-fill{height:100%;border-radius:5px;}
+.hbar-val{font-size:12px;font-family:var(--mono);font-weight:600;min-width:40px;text-align:right;}
+
+/* TIMELINE BARS — week view */
+.week-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:8px;}
+.day-col{display:flex;flex-direction:column;align-items:center;gap:4px;}
+.day-bar-wrap{height:120px;display:flex;align-items:flex-end;width:100%;}
+.day-bar{width:100%;border-radius:4px 4px 0 0;transition:height .5s;}
+.day-label{font-size:10px;color:var(--muted);text-align:center;}
+.day-val{font-size:10px;font-family:var(--mono);font-weight:500;text-align:center;}
+
+/* TRAFFIC TREND */
+.trend-row{display:flex;align-items:flex-end;gap:6px;height:100px;margin-bottom:6px;}
+.trend-bar{flex:1;border-radius:3px 3px 0 0;}
+.trend-labels{display:flex;gap:6px;margin-bottom:12px;}
+.trend-label{flex:1;font-size:9px;color:var(--muted);text-align:center;}
+
+/* QUOTE BOX */
+.quote-box{
+  background:var(--s2);border-left:3px solid var(--red);
+  border-radius:0 8px 8px 0;padding:12px 14px;margin-bottom:8px;
+}
+.quote-text{font-size:13px;color:var(--text);line-height:1.6;margin-bottom:4px;}
+.quote-text::before{content:'"';color:var(--red);}
+.quote-text::after{content:'"';color:var(--red);}
+.quote-source{font-size:11px;color:var(--muted);}
+
+/* SOLUTION CARDS */
+.sol-card{background:var(--s1);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:14px;}
+.sol-header{padding:16px 20px 14px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:14px;}
+.sol-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.sol-tag{font-size:10px;font-weight:600;padding:2px 9px;border-radius:4px;font-family:var(--mono);display:inline-block;margin-bottom:6px;}
+.sol-title{font-size:15px;font-weight:700;margin-bottom:3px;}
+.sol-sub{font-size:12px;color:var(--muted);}
+.sol-body{padding:18px 20px;}
+.sol-cols{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+
+/* BEFORE AFTER */
+.ba-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border-radius:8px;overflow:hidden;margin-bottom:14px;}
+.ba-col{padding:14px;}
+.ba-col.before{background:var(--redbg);}
+.ba-col.after{background:var(--greenbg);}
+.ba-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;}
+.ba-label.before{color:var(--red);}
+.ba-label.after{color:var(--green);}
+.ba-item{font-size:12px;line-height:1.8;display:flex;align-items:flex-start;gap:6px;}
+.ba-item::before{content:'→';color:var(--muted);flex-shrink:0;}
+.ba-big{font-size:28px;font-weight:700;font-family:var(--mono);margin-top:10px;line-height:1;}
+.ba-big-label{font-size:11px;color:var(--muted);}
+
+/* PRICE TABLE */
+.price-table{width:100%;border-collapse:collapse;font-size:12px;}
+.price-table th{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);padding:7px 10px;text-align:left;border-bottom:1px solid var(--border);}
+.price-table td{padding:8px 10px;border-bottom:1px solid var(--s3);vertical-align:middle;}
+.price-table tr:last-child td{border-bottom:none;}
+.price-freshmart{color:var(--red);font-weight:600;font-family:var(--mono);}
+.price-savemore{color:var(--green);font-weight:600;font-family:var(--mono);}
+.price-gap{font-family:var(--mono);font-weight:500;}
+.gap-high{color:var(--red);}
+.gap-low{color:var(--amber);}
+.gap-zero{color:var(--green);}
+.fix-badge{font-size:10px;padding:2px 7px;border-radius:4px;font-weight:500;background:var(--greenbg);color:var(--green);border:1px solid var(--greenbd);}
+.nofix-badge{font-size:10px;padding:2px 7px;border-radius:4px;font-weight:500;background:var(--s3);color:var(--muted);border:1px solid var(--border);}
+
+/* ROI */
+.roi-box{background:linear-gradient(135deg,var(--greenbg),#f0faf5);border:1px solid var(--greenbd);border-radius:12px;padding:20px;margin-bottom:14px;}
+.roi-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--greenbd);font-size:13px;}
+.roi-row:last-child{border-bottom:none;padding-bottom:0;}
+.roi-label{color:var(--muted);}
+.roi-val{font-weight:700;font-family:var(--mono);font-size:15px;}
+
+/* ROADMAP */
+.roadmap{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:14px;}
+.rm-card{background:var(--s1);border:1px solid var(--border);border-radius:10px;padding:14px;}
+.rm-phase{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px;}
+.rm-title{font-size:13px;font-weight:600;margin-bottom:8px;}
+.rm-item{font-size:12px;color:var(--muted);line-height:1.8;display:flex;gap:6px;}
+.rm-item::before{content:'✓';color:var(--green);flex-shrink:0;}
+
+/* INSIGHT */
+.insight{background:var(--bluebg);border:1px solid var(--bluebd);border-radius:8px;padding:14px;font-size:12px;color:var(--muted);line-height:1.7;margin-top:12px;}
+.insight strong{color:var(--blue);}
+
+/* ROOT CAUSE BOX */
+.rootcause{
+  background:var(--text);color:#f5f3ee;
+  border-radius:12px;padding:20px 24px;margin-bottom:14px;
+}
+.rc-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:rgba(255,255,255,.5);margin-bottom:10px;}
+.rc-stated{font-size:13px;color:rgba(255,255,255,.6);margin-bottom:8px;line-height:1.6;}
+.rc-arrow{font-size:20px;color:rgba(255,255,255,.3);margin:6px 0;}
+.rc-real{font-size:16px;font-weight:600;color:#fff;line-height:1.5;}
+.rc-real span{color:#6ee7b7;}
+
+@media(max-width:800px){
+  .kpi-row,.grid2,.grid3,.sol-cols,.ba-grid,.roadmap{grid-template-columns:1fr;}
+  nav{padding:0 16px;}
+  .page{padding:66px 16px 40px;}
+  .hero h1{font-size:22px;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">FM</div>
+  <div>
+    <div class="nav-name">FreshMart Group</div>
+    <div class="nav-sub">Business Diagnostic & Solution — Consulting Portfolio Project</div>
+  </div>
+  <div class="nav-right">
+    <span class="nbadge alert">↓ Traffic -12%</span>
+    <span class="nbadge ok">✓ Solution Identified</span>
+  </div>
+</nav>
+
+<div class="page">
+
+  <div class="hero">
+    <div class="eyebrow">🛒 Consulting Case Study — Retail Operations</div>
+    <h1>FreshMart Lost <span>12% of Its Customers.</span><br/>Here Is Exactly Why — and How to Fix It.</h1>
+    <div class="hero-desc">The CEO said foot traffic was declining. One week inside the business revealed two specific, fixable problems — neither of which required a brand overhaul, a technology transformation, or a change in product range.</div>
+    <div class="hero-meta">
+      <div class="meta-item"><span class="meta-dot"></span>24 stores · NJ and NY</div>
+      <div class="meta-item"><span class="meta-dot"></span>$340M annual revenue</div>
+      <div class="meta-item"><span class="meta-dot"></span>1 week on-site diagnostic</div>
+      <div class="meta-item"><span class="meta-dot"></span>Exit surveys · transaction data · staff interviews</div>
+    </div>
+  </div>
+
+  <!-- KPIs -->
+  <div class="kpi-row">
+    <div class="kpi">
+      <div class="kpi-num" style="color:var(--red);">-12%</div>
+      <div class="kpi-label">Foot Traffic YoY</div>
+      <div class="kpi-sub" style="color:var(--red);">18 months declining</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-num" style="color:var(--red);">11 min</div>
+      <div class="kpi-label">Avg Checkout Wait</div>
+      <div class="kpi-sub" style="color:var(--muted);">Was 4 min in 2022</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-num" style="color:var(--red);">34%</div>
+      <div class="kpi-label">Non-return Rate</div>
+      <div class="kpi-sub" style="color:var(--muted);">Tried SaveMore, didn't return</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-num" style="color:var(--amber);">11%</div>
+      <div class="kpi-label">Price Gap (staples)</div>
+      <div class="kpi-sub" style="color:var(--muted);">vs SaveMore avg</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-num" style="color:var(--green);">$2.9M</div>
+      <div class="kpi-label">Recoverable Revenue</div>
+      <div class="kpi-sub" style="color:var(--green);">Annual · conservative est.</div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tb active" onclick="switchTab('diagnostic',this)">🔍 Problem Diagnostic</button>
+    <button class="tb" onclick="switchTab('solution',this)">✅ Solution & Business Case</button>
+  </div>
+
+  <!-- ══ TAB 1: DIAGNOSTIC ══ -->
+  <div id="tab-diagnostic" class="tp active">
+
+    <!-- ROOT CAUSE REVEAL -->
+    <div class="rootcause">
+      <div class="rc-label">What the CEO said vs what the data showed</div>
+      <div class="rc-stated">stated problem: "Foot traffic is down 12% and I don't know why. We've tried promotions, product refresh — nothing works."</div>
+      <div class="rc-arrow">↓</div>
+      <div class="rc-real">Real problem: Customers are leaving because <span>checkout lines are too long</span> and <span>everyday staples are cheaper down the road.</span> Two problems. Both fixable in 90 days.</div>
+    </div>
+
+    <!-- FOOT TRAFFIC TREND -->
+    <div class="card">
+      <div class="card-title">Foot traffic trend — 18 months · all 24 stores combined</div>
+      <div style="margin-bottom:8px;">
+        <div class="trend-row">
+          <div class="trend-bar" style="height:95%;background:var(--green);opacity:.7;border-radius:3px 3px 0 0;"></div>
+          <div class="trend-bar" style="height:94%;background:var(--green);opacity:.7;border-radius:3px 3px 0 0;"></div>
+          <div class="trend-bar" style="height:91%;background:var(--amber);opacity:.7;border-radius:3px 3px 0 0;"></div>
+          <div class="trend-bar" style="height:88%;background:var(--amber);opacity:.7;border-radius:3px 3px 0 0;"></div>
+          <div class="trend-bar" style="height:87%;background:var(--amber);opacity:.7;border-radius:3px 3px 0 0;"></div>
+          <div class="trend-bar" style="height:84%;background:var(--amber);opacity:.7;border-radius:3px 3px 0 0;"></div>
+          <div class="trend-bar" style="height:82%;background:var(--red);opacity:.7;border-radius:3px 3px 0 0;"></div>
+          <div class="trend-bar" style="height:88%;background:var(--red);opacity:.7;border-radius:3px 3px 0 0;"></div>
+          <div class="trend-bar" style="height:86%;background:var(--red);opacity:.7;border-radius:3px 3px 0 0;"></div>
+          <div class="trend-bar" style="height:83%;background:var(--red);opacity:.7;border-radius:3px 3px 0 0;"></div>
+          <div class="trend-bar" style="height:85%;background:var(--red);opacity:.7;border-radius:3px 3px 0 0;"></div>
+          <div class="trend-bar" style="height:82%;background:var(--red);opacity:.7;border-radius:3px 3px 0 0;"></div>
+          <div class="trend-bar" style="height:90%;background:var(--red);opacity:.7;border-radius:3px 3px 0 0;"></div>
+          <div class="trend-bar" style="height:87%;background:var(--red);opacity:.7;border-radius:3px 3px 0 0;"></div>
+          <div class="trend-bar" style="height:84%;background:var(--red);opacity:.7;border-radius:3px 3px 0 0;"></div>
+          <div class="trend-bar" style="height:82%;background:var(--red);opacity:.7;border-radius:3px 3px 0 0;"></div>
+          <div class="trend-bar" style="height:80%;background:var(--red);opacity:.7;border-radius:3px 3px 0 0;"></div>
+          <div class="trend-bar" style="height:78%;background:var(--red);opacity:.8;border-radius:3px 3px 0 0;"></div>
+        </div>
+        <div style="height:1px;background:var(--border);margin-bottom:6px;"></div>
+        <div class="trend-labels">
+          <div class="trend-label">Jan 23</div>
+          <div class="trend-label">Feb</div>
+          <div class="trend-label">Mar ← SaveMore opens</div>
+          <div class="trend-label">Apr</div>
+          <div class="trend-label">May</div>
+          <div class="trend-label">Jun ← Lanes cut to 7</div>
+          <div class="trend-label">Jul</div>
+          <div class="trend-label">Aug</div>
+          <div class="trend-label">Sep</div>
+          <div class="trend-label">Oct</div>
+          <div class="trend-label">Nov</div>
+          <div class="trend-label">Dec</div>
+          <div class="trend-label">Jan 24</div>
+          <div class="trend-label">Feb</div>
+          <div class="trend-label">Mar</div>
+          <div class="trend-label">Apr</div>
+          <div class="trend-label">May</div>
+          <div class="trend-label">Jun 24</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;font-size:11px;">
+        <div style="display:flex;align-items:center;gap:4px;"><div style="width:10px;height:10px;background:var(--green);opacity:.7;border-radius:2px;"></div>Stable</div>
+        <div style="display:flex;align-items:center;gap:4px;"><div style="width:10px;height:10px;background:var(--amber);opacity:.7;border-radius:2px;"></div>Early decline — SaveMore effect</div>
+        <div style="display:flex;align-items:center;gap:4px;"><div style="width:10px;height:10px;background:var(--red);opacity:.7;border-radius:2px;"></div>Accelerated decline — lane cuts compound price issue</div>
+      </div>
+    </div>
+
+    <!-- TWO FINDINGS -->
+    <div class="grid2">
+
+      <!-- FINDING 1 -->
+      <div class="finding">
+        <div class="finding-header">
+          <div class="finding-num" style="background:var(--redbg);color:var(--red);border:1px solid var(--redbd);">01</div>
+          <div>
+            <div class="finding-title">Checkout lanes cut from 12 to 7</div>
+            <div class="finding-subtitle">Decision made June 2023 to reduce labor costs — accelerated the decline</div>
+          </div>
+        </div>
+        <div class="finding-body">
+          <div class="finding-stat"><span class="fs-label">Open lanes (2022 average)</span><span class="fs-val" style="color:var(--green);">12 lanes</span></div>
+          <div class="finding-stat"><span class="fs-label">Open lanes (current)</span><span class="fs-val" style="color:var(--red);">7 lanes</span></div>
+          <div class="finding-stat"><span class="fs-label">Average wait time (2022)</span><span class="fs-val" style="color:var(--green);">4 min</span></div>
+          <div class="finding-stat"><span class="fs-label">Average wait time (now)</span><span class="fs-val" style="color:var(--red);">11 min</span></div>
+          <div class="finding-stat"><span class="fs-label">Cart abandonments/day</span><span class="fs-val" style="color:var(--red);">~34 carts</span></div>
+          <div class="finding-stat"><span class="fs-label">Exit survey — "too slow"</span><span class="fs-val" style="color:var(--red);">41%</span></div>
+          <div style="margin-top:12px;">
+            <div class="quote-box">
+              <div class="quote-text">I left my cart and walked out. The line went past the bread aisle.</div>
+              <div class="quote-source">Customer exit survey · Store #7 · Edison NJ</div>
+            </div>
+            <div class="quote-box">
+              <div class="quote-text">I used to come here every week. Now I go to SaveMore because I can get in and out.</div>
+              <div class="quote-source">Customer exit survey · Store #12 · Hoboken NJ</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FINDING 2 -->
+      <div class="finding">
+        <div class="finding-header">
+          <div class="finding-num" style="background:var(--amberbg);color:var(--amber);border:1px solid var(--amberbd);">02</div>
+          <div>
+            <div class="finding-title">Staple prices 11% higher than SaveMore</div>
+            <div class="finding-subtitle">SaveMore opened March 2023 — 0.8 miles away. Price gap on everyday items is visible and remembered.</div>
+          </div>
+        </div>
+        <div class="finding-body">
+          <div class="finding-stat"><span class="fs-label">SaveMore opened</span><span class="fs-val">March 2023</span></div>
+          <div class="finding-stat"><span class="fs-label">Avg price gap on staples</span><span class="fs-val" style="color:var(--red);">+11% FreshMart</span></div>
+          <div class="finding-stat"><span class="fs-label">Items customers compare</span><span class="fs-val">Milk, eggs, bread, pasta</span></div>
+          <div class="finding-stat"><span class="fs-label">Non-return rate after first SaveMore visit</span><span class="fs-val" style="color:var(--red);">34%</span></div>
+          <div class="finding-stat"><span class="fs-label">Exit survey — "cheaper elsewhere"</span><span class="fs-val" style="color:var(--red);">38%</span></div>
+          <div class="finding-stat"><span class="fs-label">FreshMart produce vs SaveMore</span><span class="fs-val" style="color:var(--green);">Competitive or better</span></div>
+          <div style="margin-top:12px;">
+            <div class="quote-box">
+              <div class="quote-text">Milk is $1.20 cheaper at SaveMore. That adds up every week.</div>
+              <div class="quote-source">Customer exit survey · Store #3 · Jersey City NJ</div>
+            </div>
+            <div class="quote-box">
+              <div class="quote-text">I still buy my vegetables here. But I buy everything else at SaveMore now.</div>
+              <div class="quote-source">Customer exit survey · Store #18 · Flushing NY</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRICE COMPARISON TABLE -->
+    <div class="card">
+      <div class="card-title">Price comparison — FreshMart vs SaveMore · 14 key staple items</div>
+      <table class="price-table">
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>FreshMart</th>
+            <th>SaveMore</th>
+            <th>Gap</th>
+            <th>Customer notices?</th>
+            <th>Recommended fix</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Whole milk (1 gallon)</td><td class="price-freshmart">$4.89</td><td class="price-savemore">$3.69</td><td class="price-gap gap-high">+$1.20</td><td>✓ Weekly purchase</td><td><span class="fix-badge">Match price</span></td></tr>
+          <tr><td>Eggs (1 dozen large)</td><td class="price-freshmart">$3.99</td><td class="price-savemore">$3.29</td><td class="price-gap gap-high">+$0.70</td><td>✓ Weekly purchase</td><td><span class="fix-badge">Match price</span></td></tr>
+          <tr><td>White bread (loaf)</td><td class="price-freshmart">$3.49</td><td class="price-savemore">$2.99</td><td class="price-gap gap-high">+$0.50</td><td>✓ Weekly purchase</td><td><span class="fix-badge">Match price</span></td></tr>
+          <tr><td>Pasta (1 lb spaghetti)</td><td class="price-freshmart">$2.29</td><td class="price-savemore">$1.89</td><td class="price-gap gap-low">+$0.40</td><td>✓ Regular purchase</td><td><span class="fix-badge">Match price</span></td></tr>
+          <tr><td>Butter (1 lb)</td><td class="price-freshmart">$5.49</td><td class="price-savemore">$4.79</td><td class="price-gap gap-low">+$0.70</td><td>✓ Regular purchase</td><td><span class="fix-badge">Match price</span></td></tr>
+          <tr><td>Rice (2 lb bag)</td><td class="price-freshmart">$3.79</td><td class="price-savemore">$3.19</td><td class="price-gap gap-low">+$0.60</td><td>Occasional</td><td><span class="fix-badge">Match price</span></td></tr>
+          <tr><td>Orange juice (52 oz)</td><td class="price-freshmart">$5.99</td><td class="price-savemore">$5.49</td><td class="price-gap gap-low">+$0.50</td><td>Regular purchase</td><td><span class="fix-badge">Match price</span></td></tr>
+          <tr><td>Chicken breast (per lb)</td><td class="price-freshmart">$5.29</td><td class="price-savemore">$5.49</td><td class="price-gap gap-zero">-$0.20</td><td>✓ FreshMart wins</td><td><span class="nofix-badge">Promote this</span></td></tr>
+          <tr><td>Tomatoes (per lb)</td><td class="price-freshmart">$1.99</td><td class="price-savemore">$2.29</td><td class="price-gap gap-zero">-$0.30</td><td>✓ FreshMart wins</td><td><span class="nofix-badge">Promote this</span></td></tr>
+          <tr><td>Apples (3 lb bag)</td><td class="price-freshmart">$4.99</td><td class="price-savemore">$5.49</td><td class="price-gap gap-zero">-$0.50</td><td>✓ FreshMart wins</td><td><span class="nofix-badge">Promote this</span></td></tr>
+        </tbody>
+      </table>
+      <div class="insight">
+        <strong>Key insight:</strong> FreshMart does not have a blanket pricing problem. It has a <strong>staple pricing problem</strong> on the 7 items customers buy every single week and mentally use to judge a store's overall value. On fresh produce and meat — where quality matters — FreshMart is already competitive or cheaper. The fix is surgical, not a store-wide price war.
+      </div>
+    </div>
+
+    <!-- EXIT SURVEY BREAKDOWN -->
+    <div class="card">
+      <div class="card-title">Exit survey results — why customers are switching · 847 responses across 8 stores</div>
+      <div style="margin-top:4px;">
+        <div class="hbar-row">
+          <div class="hbar-label">Checkout lines too long</div>
+          <div class="hbar-track"><div class="hbar-fill" style="width:82%;background:var(--red);"></div></div>
+          <div class="hbar-val" style="color:var(--red);">41%</div>
+        </div>
+        <div class="hbar-row">
+          <div class="hbar-label">Cheaper at SaveMore</div>
+          <div class="hbar-track"><div class="hbar-fill" style="width:76%;background:var(--red);opacity:.85;"></div></div>
+          <div class="hbar-val" style="color:var(--red);">38%</div>
+        </div>
+        <div class="hbar-row">
+          <div class="hbar-label">Both — time AND price</div>
+          <div class="hbar-track"><div class="hbar-fill" style="width:30%;background:var(--amber);"></div></div>
+          <div class="hbar-val" style="color:var(--amber);">15%</div>
+        </div>
+        <div class="hbar-row">
+          <div class="hbar-label">Product availability</div>
+          <div class="hbar-track"><div class="hbar-fill" style="width:8%;background:var(--muted);"></div></div>
+          <div class="hbar-val" style="color:var(--muted);">4%</div>
+        </div>
+        <div class="hbar-row">
+          <div class="hbar-label">Other / no reason given</div>
+          <div class="hbar-track"><div class="hbar-fill" style="width:4%;background:var(--dim);"></div></div>
+          <div class="hbar-val" style="color:var(--dim);">2%</div>
+        </div>
+        <div style="margin-top:12px;padding:12px 14px;background:var(--redbg);border:1px solid var(--redbd);border-radius:8px;font-size:12px;color:var(--red);">
+          <strong>79% of switching decisions</strong> come down to exactly two fixable problems. This is not a brand problem, a marketing problem, or a product problem. Fix checkout speed and fix 7 staple prices. That is the entire intervention.
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══ TAB 2: SOLUTION ══ -->
+  <div id="tab-solution" class="tp">
+
+    <!-- THE FLYWHEEL -->
+    <div style="background:var(--text);color:#f5f3ee;border-radius:12px;padding:22px 26px;margin-bottom:16px;">
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:rgba(255,255,255,.4);margin-bottom:12px;">The strategy — how 2 cents creates a revenue flywheel</div>
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:0;align-items:center;">
+        <div style="text-align:center;padding:10px;">
+          <div style="font-size:22px;margin-bottom:6px;">🏷️</div>
+          <div style="font-size:12px;font-weight:600;color:#6ee7b7;margin-bottom:4px;">Price staples 2 cents below SaveMore</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.5);">Milk, eggs, bread, butter, pasta, rice, OJ</div>
+        </div>
+        <div style="text-align:center;font-size:20px;color:rgba(255,255,255,.3);">→</div>
+        <div style="text-align:center;padding:10px;">
+          <div style="font-size:22px;margin-bottom:6px;">👣</div>
+          <div style="font-size:12px;font-weight:600;color:#6ee7b7;margin-bottom:4px;">Customers choose FreshMart over SaveMore</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.5);">Word spreads — FreshMart is cheaper now</div>
+        </div>
+        <div style="text-align:center;font-size:20px;color:rgba(255,255,255,.3);">→</div>
+        <div style="text-align:center;padding:10px;">
+          <div style="font-size:22px;margin-bottom:6px;">🛒</div>
+          <div style="font-size:12px;font-weight:600;color:#6ee7b7;margin-bottom:4px;">While in store for staples they buy everything else</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.5);">Produce, meat, snacks, household — full basket</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0;align-items:center;margin-top:8px;border-top:1px solid rgba(255,255,255,.1);padding-top:14px;">
+        <div style="text-align:center;padding:10px;">
+          <div style="font-size:22px;margin-bottom:6px;">📈</div>
+          <div style="font-size:12px;font-weight:600;color:#6ee7b7;margin-bottom:4px;">Basket size grows from $41 to $67</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.5);">High-margin items fill the rest of the cart</div>
+        </div>
+        <div style="text-align:center;font-size:20px;color:rgba(255,255,255,.3);">→</div>
+        <div style="text-align:center;padding:10px;">
+          <div style="font-size:22px;margin-bottom:6px;">💰</div>
+          <div style="font-size:12px;font-weight:600;color:#6ee7b7;margin-bottom:4px;">Total revenue up $3.4M despite 2-cent cut</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.5);">Margin lost on staples is small vs revenue gained on full baskets</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- THE 2-CENT DECISION -->
+    <div class="card">
+      <div class="card-title">The pricing decision — why 2 cents below, not matching</div>
+      <div class="grid2" style="margin-top:4px;">
+        <div>
+          <div style="font-size:13px;font-weight:600;margin-bottom:10px;">Three options we considered</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div style="background:var(--redbg);border:1px solid var(--redbd);border-radius:8px;padding:12px;">
+              <div style="font-size:11px;font-weight:700;color:var(--red);margin-bottom:4px;">❌ Option A — Do nothing</div>
+              <div style="font-size:12px;color:var(--muted);line-height:1.6;">Keep prices as-is. Continue losing 38% of customers to SaveMore on price perception. Foot traffic continues declining. Revenue erosion accelerates.</div>
+            </div>
+            <div style="background:var(--amberbg);border:1px solid var(--amberbd);border-radius:8px;padding:12px;">
+              <div style="font-size:11px;font-weight:700;color:var(--amber);margin-bottom:4px;">⚠ Option B — Match SaveMore exactly</div>
+              <div style="font-size:12px;color:var(--muted);line-height:1.6;">Price parity on 7 staples. Neutralises the price objection but gives customers no reason to actively prefer FreshMart. Traffic recovers slowly. No competitive advantage created.</div>
+            </div>
+            <div style="background:var(--greenbg);border:1px solid var(--greenbd);border-radius:8px;padding:12px;">
+              <div style="font-size:11px;font-weight:700;color:var(--green);margin-bottom:4px;">✓ Option C — Price 2 cents below SaveMore (recommended)</div>
+              <div style="font-size:12px;color:var(--muted);line-height:1.6;">FreshMart becomes the cheaper option on anchor items. Customers who were comparing now actively choose FreshMart. Word of mouth shifts. New customers acquired, not just retained.</div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:13px;font-weight:600;margin-bottom:10px;">Why 2 cents is enough</div>
+          <div style="background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;">
+            <div style="font-size:12px;color:var(--muted);line-height:1.8;">Customers do not calculate exact savings. They form a perception — <em>"FreshMart is cheaper"</em> or <em>"SaveMore is cheaper."</em> Two cents on milk is enough to flip that perception completely. The customer tells their neighbour. The neighbour tells two people. The word-of-mouth effect multiplies the impact of a 2-cent decision across thousands of shoppers.</div>
+          </div>
+          <div style="background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:14px;">
+            <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:10px;">New price list — FreshMart vs SaveMore</div>
+            <div style="font-size:12px;display:flex;flex-direction:column;gap:5px;">
+              <div style="display:grid;grid-template-columns:1fr auto auto auto;gap:8px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);padding-bottom:5px;border-bottom:1px solid var(--border);">
+                <span>Item</span><span>SaveMore</span><span>FreshMart NEW</span><span>Advantage</span>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr auto auto auto;gap:8px;padding:3px 0;border-bottom:1px solid var(--s3);">
+                <span>🥛 Milk (gal)</span><span style="font-family:var(--mono);">$3.69</span><span style="font-family:var(--mono);color:var(--green);font-weight:600;">$3.67</span><span style="color:var(--green);font-size:11px;">-$0.02 ✓</span>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr auto auto auto;gap:8px;padding:3px 0;border-bottom:1px solid var(--s3);">
+                <span>🥚 Eggs (doz)</span><span style="font-family:var(--mono);">$3.29</span><span style="font-family:var(--mono);color:var(--green);font-weight:600;">$3.27</span><span style="color:var(--green);font-size:11px;">-$0.02 ✓</span>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr auto auto auto;gap:8px;padding:3px 0;border-bottom:1px solid var(--s3);">
+                <span>🍞 Bread (loaf)</span><span style="font-family:var(--mono);">$2.99</span><span style="font-family:var(--mono);color:var(--green);font-weight:600;">$2.97</span><span style="color:var(--green);font-size:11px;">-$0.02 ✓</span>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr auto auto auto;gap:8px;padding:3px 0;border-bottom:1px solid var(--s3);">
+                <span>🧈 Butter (1lb)</span><span style="font-family:var(--mono);">$4.79</span><span style="font-family:var(--mono);color:var(--green);font-weight:600;">$4.77</span><span style="color:var(--green);font-size:11px;">-$0.02 ✓</span>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr auto auto auto;gap:8px;padding:3px 0;border-bottom:1px solid var(--s3);">
+                <span>🍝 Pasta (1lb)</span><span style="font-family:var(--mono);">$1.89</span><span style="font-family:var(--mono);color:var(--green);font-weight:600;">$1.87</span><span style="color:var(--green);font-size:11px;">-$0.02 ✓</span>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr auto auto auto;gap:8px;padding:3px 0;border-bottom:1px solid var(--s3);">
+                <span>🍚 Rice (2lb)</span><span style="font-family:var(--mono);">$3.19</span><span style="font-family:var(--mono);color:var(--green);font-weight:600;">$3.17</span><span style="color:var(--green);font-size:11px;">-$0.02 ✓</span>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr auto auto auto;gap:8px;padding:3px 0;">
+                <span>🧃 OJ (52oz)</span><span style="font-family:var(--mono);">$5.49</span><span style="font-family:var(--mono);color:var(--green);font-weight:600;">$5.47</span><span style="color:var(--green);font-size:11px;">-$0.02 ✓</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BASKET EFFECT -->
+    <div class="card">
+      <div class="card-title">The basket effect — what customers actually buy once they're inside</div>
+      <div class="grid2" style="margin-top:4px;">
+        <div>
+          <div style="font-size:13px;font-weight:600;margin-bottom:12px;">Current vs projected basket composition</div>
+          <div style="margin-bottom:8px;">
+            <div style="font-size:11px;color:var(--muted);margin-bottom:6px;font-weight:500;">CURRENT BASKET — $41 avg (price-wary customer)</div>
+            <div class="hbar-row"><div class="hbar-label">Staples only (quick trip)</div><div class="hbar-track"><div class="hbar-fill" style="width:72%;background:var(--red);opacity:.7;"></div></div><div class="hbar-val" style="color:var(--red);">72%</div></div>
+            <div class="hbar-row"><div class="hbar-label">Produce</div><div class="hbar-track"><div class="hbar-fill" style="width:14%;background:var(--amber);"></div></div><div class="hbar-val" style="color:var(--amber);">14%</div></div>
+            <div class="hbar-row"><div class="hbar-label">Meat / deli</div><div class="hbar-track"><div class="hbar-fill" style="width:8%;background:var(--amber);"></div></div><div class="hbar-val" style="color:var(--amber);">8%</div></div>
+            <div class="hbar-row"><div class="hbar-label">Snacks / household</div><div class="hbar-track"><div class="hbar-fill" style="width:6%;background:var(--dim);"></div></div><div class="hbar-val" style="color:var(--dim);">6%</div></div>
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--muted);margin-bottom:6px;font-weight:500;">PROJECTED BASKET — $67 avg (loyal returning customer)</div>
+            <div class="hbar-row"><div class="hbar-label">Staples</div><div class="hbar-track"><div class="hbar-fill" style="width:38%;background:var(--blue);opacity:.7;"></div></div><div class="hbar-val" style="color:var(--blue);">38%</div></div>
+            <div class="hbar-row"><div class="hbar-label">Produce</div><div class="hbar-track"><div class="hbar-fill" style="width:28%;background:var(--green);"></div></div><div class="hbar-val" style="color:var(--green);">28%</div></div>
+            <div class="hbar-row"><div class="hbar-label">Meat / deli</div><div class="hbar-track"><div class="hbar-fill" style="width:20%;background:var(--green);opacity:.8;"></div></div><div class="hbar-val" style="color:var(--green);">20%</div></div>
+            <div class="hbar-row"><div class="hbar-label">Snacks / household</div><div class="hbar-track"><div class="hbar-fill" style="width:14%;background:var(--green);opacity:.6;"></div></div><div class="hbar-val" style="color:var(--green);">14%</div></div>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:13px;font-weight:600;margin-bottom:12px;">Why basket size jumps from $41 to $67</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div style="background:var(--s2);border-radius:8px;padding:12px;border-left:3px solid var(--green);">
+              <div style="font-size:12px;font-weight:500;margin-bottom:3px;">They came in for milk and eggs</div>
+              <div style="font-size:11px;color:var(--muted);line-height:1.6;">The staple purchase is the reason to visit. But once inside a well-stocked, comfortable store, customers buy what they see. Impulse categories — snacks, ready meals, seasonal items — are bought in-store, not planned.</div>
+            </div>
+            <div style="background:var(--s2);border-radius:8px;padding:12px;border-left:3px solid var(--green);">
+              <div style="font-size:12px;font-weight:500;margin-bottom:3px;">They trust FreshMart's produce now</div>
+              <div style="font-size:11px;color:var(--muted);line-height:1.6;">Customers who previously bought vegetables elsewhere now buy them at FreshMart because they're already here. FreshMart's produce is genuinely better. Once customers are in the store regularly, that quality advantage gets discovered.</div>
+            </div>
+            <div style="background:var(--s2);border-radius:8px;padding:12px;border-left:3px solid var(--green);">
+              <div style="font-size:12px;font-weight:500;margin-bottom:3px;">Loyalty replaces split shopping</div>
+              <div style="font-size:11px;color:var(--muted);line-height:1.6;">Today customers split their shop — staples at SaveMore, fresh at FreshMart. Once FreshMart wins on staple price, the split shop ends. One store gets the entire weekly basket instead of half of it.</div>
+            </div>
+            <div style="background:var(--greenbg);border:1px solid var(--greenbd);border-radius:8px;padding:10px;text-align:center;">
+              <div style="font-size:11px;color:var(--muted);margin-bottom:2px;">Basket uplift per customer per visit</div>
+              <div style="font-size:24px;font-weight:700;font-family:var(--mono);color:var(--green);">+$26</div>
+              <div style="font-size:11px;color:var(--muted);">$41 → $67 average basket</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TRAFFIC + REVENUE RECOVERY -->
+    <div class="card">
+      <div class="card-title">Traffic recovery projection — month by month after pricing change</div>
+      <div style="margin-bottom:16px;">
+        <div style="display:flex;gap:12px;margin-bottom:10px;font-size:11px;flex-wrap:wrap;">
+          <div style="display:flex;align-items:center;gap:4px;"><div style="width:10px;height:10px;background:var(--red);opacity:.7;border-radius:2px;"></div>Baseline (declining)</div>
+          <div style="display:flex;align-items:center;gap:4px;"><div style="width:10px;height:10px;background:var(--green);opacity:.8;border-radius:2px;"></div>Post-pricing change</div>
+        </div>
+        <!-- BEFORE -->
+        <div style="font-size:10px;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.4px;">Monthly foot traffic index — before (18 months decline)</div>
+        <div style="display:flex;gap:4px;height:60px;align-items:flex-end;margin-bottom:4px;">
+          <div style="flex:1;background:var(--red);opacity:.6;border-radius:2px 2px 0 0;" style="height:95%;"></div>
+          <div style="flex:1;height:93%;background:var(--red);opacity:.6;border-radius:2px 2px 0 0;"></div>
+          <div style="flex:1;height:90%;background:var(--red);opacity:.6;border-radius:2px 2px 0 0;"></div>
+          <div style="flex:1;height:88%;background:var(--red);opacity:.6;border-radius:2px 2px 0 0;"></div>
+          <div style="flex:1;height:85%;background:var(--red);opacity:.6;border-radius:2px 2px 0 0;"></div>
+          <div style="flex:1;height:83%;background:var(--red);opacity:.6;border-radius:2px 2px 0 0;"></div>
+        </div>
+        <div style="display:flex;gap:4px;margin-bottom:14px;">
+          <div style="flex:1;font-size:9px;color:var(--muted);text-align:center;">M-6</div>
+          <div style="flex:1;font-size:9px;color:var(--muted);text-align:center;">M-5</div>
+          <div style="flex:1;font-size:9px;color:var(--muted);text-align:center;">M-4</div>
+          <div style="flex:1;font-size:9px;color:var(--muted);text-align:center;">M-3</div>
+          <div style="flex:1;font-size:9px;color:var(--muted);text-align:center;">M-2</div>
+          <div style="flex:1;font-size:9px;color:var(--muted);text-align:center;">M-1 ← price change here</div>
+        </div>
+        <!-- AFTER -->
+        <div style="font-size:10px;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.4px;">Monthly foot traffic index — after pricing change (projected)</div>
+        <div style="display:flex;gap:4px;height:60px;align-items:flex-end;margin-bottom:4px;">
+          <div style="flex:1;height:83%;background:var(--amber);opacity:.7;border-radius:2px 2px 0 0;"></div>
+          <div style="flex:1;height:88%;background:var(--amber);opacity:.8;border-radius:2px 2px 0 0;"></div>
+          <div style="flex:1;height:92%;background:var(--green);opacity:.7;border-radius:2px 2px 0 0;"></div>
+          <div style="flex:1;height:96%;background:var(--green);opacity:.75;border-radius:2px 2px 0 0;"></div>
+          <div style="flex:1;height:100%;background:var(--green);opacity:.85;border-radius:2px 2px 0 0;"></div>
+          <div style="flex:1;height:100%;background:var(--green);opacity:.9;border-radius:2px 2px 0 0;"></div>
+        </div>
+        <div style="display:flex;gap:4px;">
+          <div style="flex:1;font-size:9px;color:var(--muted);text-align:center;">M+1 word spreading</div>
+          <div style="flex:1;font-size:9px;color:var(--muted);text-align:center;">M+2 recovery starts</div>
+          <div style="flex:1;font-size:9px;color:var(--muted);text-align:center;">M+3 +9% traffic</div>
+          <div style="flex:1;font-size:9px;color:var(--muted);text-align:center;">M+4 +11% traffic</div>
+          <div style="flex:1;font-size:9px;color:var(--muted);text-align:center;">M+5 full recovery</div>
+          <div style="flex:1;font-size:9px;color:var(--muted);text-align:center;">M+6 above baseline</div>
+        </div>
+      </div>
+      <div class="insight">
+        <strong>Why recovery takes 3 months, not 3 weeks:</strong> Customers who left for SaveMore need to hear about the price change, try FreshMart again, confirm it with their own eyes, and change their weekly shopping habit. Habit change takes 4–6 weeks minimum. Month 1 is word-of-mouth. Month 2 is first-returners. Month 3 is habit formation. By month 5 the new customers who never shopped FreshMart before — attracted purely by price — push traffic above the original baseline.
+      </div>
+    </div>
+
+    <!-- THE FULL NUMBERS -->
+    <div class="roi-box">
+      <div style="font-size:14px;font-weight:700;margin-bottom:16px;color:var(--green);">Full financial picture — how 2 cents creates $3.4M in revenue</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+        <div>
+          <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--green);margin-bottom:8px;">What we give up</div>
+          <div class="roi-row" style="border-color:var(--greenbd);"><span class="roi-label">2-cent reduction × 7 items × weekly sales volume</span><span class="roi-val" style="color:var(--red);">-$47,000/yr</span></div>
+          <div class="roi-row" style="border-color:var(--greenbd);"><span class="roi-label">Checkout kiosks (one-time)</span><span class="roi-val" style="color:var(--red);">-$180,000</span></div>
+          <div class="roi-row" style="border-color:var(--greenbd);"><span class="roi-label">Total cost — year 1</span><span class="roi-val" style="color:var(--red);">-$227,000</span></div>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--green);margin-bottom:8px;">What we get back</div>
+          <div class="roi-row" style="border-color:var(--greenbd);"><span class="roi-label">Traffic recovery — 34% churned customers return</span><span class="roi-val" style="color:var(--green);">+$1.8M</span></div>
+          <div class="roi-row" style="border-color:var(--greenbd);"><span class="roi-label">Basket uplift — $41 → $67 avg per visit</span><span class="roi-val" style="color:var(--green);">+$1.1M</span></div>
+          <div class="roi-row" style="border-color:var(--greenbd);"><span class="roi-label">New customers — FreshMart now cheapest nearby</span><span class="roi-val" style="color:var(--green);">+$0.5M</span></div>
+          <div class="roi-row" style="border-color:var(--greenbd);"><span class="roi-label">Total revenue gain — year 1</span><span class="roi-val" style="color:var(--green);">+$3.4M</span></div>
+        </div>
+      </div>
+      <div style="border-top:1px solid var(--greenbd);margin-top:14px;padding-top:14px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;text-align:center;">
+        <div><div style="font-size:28px;font-weight:700;font-family:var(--mono);color:var(--green);">$3.17M</div><div style="font-size:11px;color:var(--muted);">Year 1 net gain</div></div>
+        <div><div style="font-size:28px;font-weight:700;font-family:var(--mono);color:var(--green);">24 days</div><div style="font-size:11px;color:var(--muted);">Payback period</div></div>
+        <div><div style="font-size:28px;font-weight:700;font-family:var(--mono);color:var(--green);">$9.1M</div><div style="font-size:11px;color:var(--muted);">3-year NPV</div></div>
+      </div>
+    </div>
+
+    <!-- ROADMAP -->
+    <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:8px;">90-day implementation roadmap<div style="flex:1;height:1px;background:var(--border);"></div></div>
+    <div class="roadmap">
+      <div class="rm-card" style="border-color:var(--bluebd);">
+        <div class="rm-phase" style="color:var(--blue);">Week 1–2 — Act immediately</div>
+        <div class="rm-title">Price change + checkout fix</div>
+        <div class="rm-item">Drop 7 staple prices by 2 cents today — this is a POS update, takes one hour</div>
+        <div class="rm-item">Add shelf signage: "Now cheaper than SaveMore" on all 7 items</div>
+        <div class="rm-item">Reopen 3 cashier lanes at peak hours — rescheduling only, zero cost</div>
+        <div class="rm-item">Order 4 self-checkout kiosks (2-week lead time)</div>
+        <div class="rm-item">Send email to loyalty members: "We just dropped our prices"</div>
+      </div>
+      <div class="rm-card" style="border-color:var(--amberbd);">
+        <div class="rm-phase" style="color:var(--amber);">Week 3–6 — Build awareness</div>
+        <div class="rm-title">Tell everyone</div>
+        <div class="rm-item">Install self-checkout kiosks across all 24 stores</div>
+        <div class="rm-item">Launch local social media: "FreshMart is now the best price in town"</div>
+        <div class="rm-item">In-store displays highlighting FreshMart produce quality advantage</div>
+        <div class="rm-item">Staff brief: know the 7 items by price, be ready to tell customers</div>
+        <div class="rm-item">Measure daily foot traffic vs baseline — track the recovery</div>
+      </div>
+      <div class="rm-card" style="border-color:var(--greenbd);">
+        <div class="rm-phase" style="color:var(--green);">Week 7–12 — Measure and prove</div>
+        <div class="rm-title">Show the CEO the numbers</div>
+        <div class="rm-item">Re-run exit surveys — measure sentiment on price and checkout</div>
+        <div class="rm-item">Compare average basket size: this month vs 3 months ago</div>
+        <div class="rm-item">Count returning customers using loyalty card data</div>
+        <div class="rm-item">Target: traffic up 8%, basket up 15%, revenue up 11% vs baseline</div>
+        <div class="rm-item">Present 90-day results to CEO with full before/after revenue model</div>
+      </div>
+    </div>
+
+    <!-- CLOSING -->
+    <div style="background:var(--text);color:#f5f3ee;border-radius:12px;padding:22px 26px;">
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:rgba(255,255,255,.4);margin-bottom:10px;">The business case in plain language</div>
+      <div style="font-size:16px;font-weight:600;line-height:1.6;color:#fff;">FreshMart spent 18 months losing customers over <span style="color:#6ee7b7;">2 cents on a gallon of milk.</span> The fix costs $47,000 per year in margin. It returns $3.4 million in revenue. Customers do not leave a store because milk is 2 cents more expensive — they leave because they believe the store is expensive. Flip that belief with the right 7 items and they come back. And when they come back, they do not buy just milk. They buy everything.</div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function switchTab(name,btn){
+  document.querySelectorAll('.tb').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tp').forEach(p=>p.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>
